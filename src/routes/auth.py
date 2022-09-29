@@ -1,3 +1,4 @@
+from os import access
 from flask import Blueprint, jsonify, request
 from werkzeug.security import check_password_hash, generate_password_hash
 from src.constants.http_status_codes import (
@@ -64,3 +65,42 @@ def register():
     db.session.commit()
 
     return jsonify({"msg": "User created", "user": user}), HTTP_201_CREATED
+
+
+@auth.post("/login")
+@swag_from("./docs/auth/login.yml")
+def login():
+    email = request.json.get("email", "")
+    password = request.json.get("password", "")
+
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        correct_password = check_password_hash(user.password, password)
+
+        if correct_password:
+            refresh = create_refresh_token(identity=user.id)
+            access = create_access_token(identity=user.id)
+
+            return jsonify({"user": user, "refresh": refresh, "access": access})
+
+    return jsonify({"error": "Invalid credentials"}), HTTP_401_UNAUTHORIZED
+
+
+@auth.get("/me")
+@jwt_required()
+def me():
+    current_user = get_jwt_identity()
+
+    user = User.query.filter_by(id=current_user).first()
+
+    return jsonify({"user": user}), HTTP_200_OK
+
+
+@auth.get("/token/refresh")
+@jwt_required(refresh=True)
+def refresh_users_token():
+    identity = get_jwt_identity()
+    access = create_access_token(identity=identity)
+
+    return jsonify({"access": access}), HTTP_200_OK
