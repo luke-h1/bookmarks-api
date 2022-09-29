@@ -8,7 +8,22 @@ help:
 
 
 .PHONY: dev
-vscode:
-## vscode: Install vscode extensions 
+dev:
 				pipenv run flask run
 
+.PHONY: db-up
+db-up:
+				docker-compose up
+
+.PHONY: db-init 
+db-init: 
+				pipenv run flask db init
+
+.PHONY: db-upgrade 
+db-upgrade: 
+				pipenv run flask db upgrade
+
+
+.PHONY: db-migrate
+db-migrate: 
+				pipenv run flask db migrate

@@ -7,7 +7,6 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
-    __tablename__ = "users"
 
     # exclude password from json response
     serialize_rules = "-password"
@@ -25,7 +24,6 @@ class User(db.Model):
 
 
 class Bookmark(db.Model):
-    __tablename__ = "bookmarks"
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text, nullable=True)
     url = db.Column(db.Text, nullable=False)

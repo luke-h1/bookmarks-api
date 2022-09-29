@@ -64,7 +64,12 @@ def register():
     db.session.add(user)
     db.session.commit()
 
-    return jsonify({"msg": "User created", "user": user}), HTTP_201_CREATED
+    return (
+        jsonify(
+            {"message": "User created", "user": {"username": username, "email": email}}
+        ),
+        HTTP_201_CREATED,
+    )
 
 
 @auth.post("/login")
@@ -94,7 +99,7 @@ def me():
 
     user = User.query.filter_by(id=current_user).first()
 
-    return jsonify({"user": user}), HTTP_200_OK
+    return jsonify({"username": user.username, "email": user.email}), HTTP_200_OK
 
 
 @auth.get("/token/refresh")
