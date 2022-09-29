@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "~=2.2.2"
+python-dotenv = "~=0.21.0"
+flask-sqlalchemy = "~=2.5.1"
+validators = "~=0.20.0"
+flasgger = "~=0.9.5"
+flask-jwt-extended = "~=4.4.4"
+psycopg2-binary = "*"
+flask-migrate = "*"
+
+[dev-packages]
+black = "~=22.8.0"
+
+[requires]
+python_version = "3.10"
+
+[pipenv]
+allow_prereleases = true
