@@ -5,8 +5,13 @@ import random
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
+
+    # exclude password from json response
+    serialize_rules = "-password"
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
@@ -20,7 +25,7 @@ class User(db.Model):
 
 
 class Bookmark(db.Model):
-    __tablename__ = 'bookmarks'
+    __tablename__ = "bookmarks"
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text, nullable=True)
     url = db.Column(db.Text, nullable=False)
@@ -31,15 +36,15 @@ class Bookmark(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
     def generate_short_characters(self):
-            characters = string.digits+string.ascii_letters
-            picked_chars = ''.join(random.choices(characters, k=3))
+        characters = string.digits + string.ascii_letters
+        picked_chars = "".join(random.choices(characters, k=3))
 
-            link = self.query.filter_by(short_url=picked_chars).first()
+        link = self.query.filter_by(short_url=picked_chars).first()
 
-            if link:
-                self.generate_short_characters()
-            else:
-                return  picked_chars
+        if link:
+            self.generate_short_characters()
+        else:
+            return picked_chars
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
